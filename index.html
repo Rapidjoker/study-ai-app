@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
-    <title>Study Buddy AI</title>
+    <title>Pixel Pass</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
   </head>
@@ -15,26 +15,14 @@
       <div class="blob blob-c"></div>
     </div>
 
-    <div class="app-shell">
-      <header class="glass hero-card">
-        <div>
-          <p class="eyebrow">Pixel Pass</p>
-          <h1>Meet your study companion</h1>
-          <p class="hero-copy">
-            Pick a playful avatar, drop in your notes, and let your smart study buddy guide you through each lesson.
-          </p>
-        </div>
-        <div class="top-actions">
-          <button class="icon-button" id="themeToggle" aria-label="Switch theme">☀︎</button>
-        </div>
-      </header>
-
-      <main class="layout">
+    <!-- Onboarding Screen -->
+    <div id="onboarding-screen" class="screen active">
+      <div class="app-shell">
         <section class="glass card onboarding-card">
           <div class="section-header">
             <div>
-              <p class="section-kicker">Custom companion</p>
-              <h2>Build your pet</h2>
+              <p class="section-kicker">Pixel Pass</p>
+              <h2>Design your study companion</h2>
             </div>
           </div>
 
@@ -53,16 +41,16 @@
           </div>
 
           <div class="selection-group">
-            <label class="field-label" for="animalSelect">Animal</label>
+            <label class="field-label" for="animalSelect">Species</label>
             <select id="animalSelect">
-              <option value="dog">Dog</option>
-              <option value="cat">Cat</option>
-              <option value="parrot">Parrot</option>
-              <option value="lion">Lion</option>
-              <option value="hippo">Hippo</option>
-              <option value="eagle">Eagle</option>
-              <option value="fox">Fox</option>
-              <option value="bunny">Bunny</option>
+              <option value="dog">🐶 Dog</option>
+              <option value="cat">🐱 Cat</option>
+              <option value="parrot">🦜 Parrot</option>
+              <option value="lion">🦁 Lion</option>
+              <option value="hippo">🦛 Hippo</option>
+              <option value="eagle">🦅 Eagle</option>
+              <option value="fox">🦊 Fox</option>
+              <option value="bunny">🐰 Bunny</option>
             </select>
           </div>
 
@@ -93,9 +81,9 @@
           <div class="selection-group">
             <label class="field-label">Accessories</label>
             <div class="accessory-row">
-              <button class="chip accessory-chip active" data-accessory="glasses">Glasses</button>
-              <button class="chip accessory-chip" data-accessory="bandana">Bandana</button>
-              <button class="chip accessory-chip" data-accessory="crown">Crown</button>
+              <button class="chip accessory-chip active" data-accessory="glasses">👓 Glasses</button>
+              <button class="chip accessory-chip" data-accessory="bandana">🧣 Bandana</button>
+              <button class="chip accessory-chip" data-accessory="crown">👑 Crown</button>
               <button class="chip accessory-chip" data-accessory="none">None</button>
             </div>
           </div>
@@ -105,9 +93,20 @@
             <input id="accessoryColor" type="color" value="#ff5ea8" />
           </div>
 
-          <button class="primary-button full" id="petReadyBtn">Welcome my buddy</button>
+          <button class="primary-button full" id="petReadyBtn">Start Studying</button>
         </section>
+      </div>
+    </div>
 
+    <!-- Main App Screen -->
+    <div id="main-app-screen" class="screen hidden">
+      <div class="app-header glass">
+        <div class="mini-avatar" id="miniAvatar">🦊</div>
+        <h2 class="app-title">Pixel Pass AI</h2>
+        <button class="icon-button" id="themeToggle" aria-label="Switch theme">☀︎</button>
+      </div>
+
+      <div class="app-shell">
         <section class="glass card input-card">
           <div class="section-header">
             <div>
@@ -116,7 +115,7 @@
             </div>
           </div>
 
-          <textarea id="notesInput" placeholder="Paste a chapter, notes, or a lesson summary here."></textarea>
+          <textarea id="notesInput" placeholder="Paste a chapter, notes, or a lesson summary here..."></textarea>
 
           <label class="upload-pill" for="fileInput">
             <input id="fileInput" type="file" accept=".txt,.md,.pdf" />
@@ -126,7 +125,7 @@
           <div class="chip-row">
             <span class="chip">PDF ready</span>
             <span class="chip">Gemini ready</span>
-            <span class="chip"> Focus friendly</span>
+            <span class="chip">Focus friendly</span>
           </div>
         </section>
 
@@ -139,10 +138,10 @@
           </div>
 
           <div class="action-grid">
-            <button class="action-pill" data-action="summarize">Summarize</button>
-            <button class="action-pill" data-action="guide">Study guide</button>
-            <button class="action-pill" data-action="quiz">Quiz me</button>
-            <button class="action-pill" data-action="focus">Focus sprint</button>
+            <button class="action-pill" data-action="summarize">✨ Summarize</button>
+            <button class="action-pill" data-action="guide">📖 Study guide</button>
+            <button class="action-pill" data-action="quiz">❓ Quiz me</button>
+            <button class="action-pill" data-action="focus">🎮 Focus sprint</button>
           </div>
 
           <div id="status" class="status" role="status">Ready to make studying feel lighter.</div>
@@ -152,7 +151,7 @@
           <div class="section-header">
             <div>
               <p class="section-kicker">Response</p>
-              <h2>Here’s your study spark</h2>
+              <h2>Here's your study spark</h2>
             </div>
           </div>
           <div id="results" class="results"></div>
@@ -162,7 +161,7 @@
           <div class="section-header">
             <div>
               <p class="section-kicker">History</p>
-              <h2>Your recent moments</h2>
+              <h2>Recent history</h2>
             </div>
           </div>
           <ul id="historyList" class="history-list"></ul>
@@ -185,7 +184,7 @@
           <button class="primary-button" id="geminiBtn">Ask Gemini</button>
           <div id="geminiOutput" class="results compact"></div>
         </section>
-      </main>
+      </div>
     </div>
 
     <script src="app.js"></script>

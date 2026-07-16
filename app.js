@@ -1,10 +1,7 @@
-const notesInput = document.getElementById('notesInput');
-const fileInput = document.getElementById('fileInput');
-const themeToggle = document.getElementById('themeToggle');
+const onboardingScreen = document.getElementById('onboarding-screen');
+const mainAppScreen = document.getElementById('main-app-screen');
+const miniAvatar = document.getElementById('miniAvatar');
 const petMascot = document.getElementById('petMascot');
-const petStatus = document.getElementById('petStatus');
-const petCheerBtn = document.getElementById('petCheerBtn');
-const petName = document.getElementById('petName');
 const animalSelect = document.getElementById('animalSelect');
 const breedSelect = document.getElementById('breedSelect');
 const genderSelect = document.getElementById('genderSelect');
@@ -13,6 +10,15 @@ const accessoryChips = document.querySelectorAll('.accessory-chip');
 const accessoryColorInput = document.getElementById('accessoryColor');
 const petReadyBtn = document.getElementById('petReadyBtn');
 const historyList = document.getElementById('historyList');
+const notesInput = document.getElementById('notesInput');
+const fileInput = document.getElementById('fileInput');
+const themeToggle = document.getElementById('themeToggle');
+const results = document.getElementById('results');
+const status = document.getElementById('status');
+const geminiKeyInput = document.getElementById('geminiKey');
+const geminiPromptInput = document.getElementById('geminiPrompt');
+const geminiBtn = document.getElementById('geminiBtn');
+const geminiOutput = document.getElementById('geminiOutput');
 const results = document.getElementById('results');
 const status = document.getElementById('status');
 const geminiKeyInput = document.getElementById('geminiKey');
@@ -23,7 +29,8 @@ const geminiOutput = document.getElementById('geminiOutput');
 const state = {
   text: '',
   theme: localStorage.getItem('study-theme') || 'dark',
-  history: JSON.parse(localStorage.getItem('pixel-pass-history') || '[]')
+  history: JSON.parse(localStorage.getItem('pixel-pass-history') || '[]'),
+  petName: localStorage.getItem('pixel-pass-pet') || 'Nova'
 };
 
 if (window.pdfjsLib) {
@@ -60,31 +67,27 @@ document.querySelectorAll('[data-action]').forEach((button) => {
     }
 
     if (action === 'summarize') {
-      status.textContent = 'Creating a quick summary...';
+      status.textContent = '✨ Creating a quick summary...';
       results.innerHTML = renderSummary(text);
       addHistory('Summary created');
-      celebratePet('A crisp summary is ready.');
     }
 
     if (action === 'guide') {
-      status.textContent = 'Building a study guide...';
+      status.textContent = '📖 Building a study guide...';
       results.innerHTML = renderGuide(text);
       addHistory('Study guide built');
-      celebratePet('A calm guide is here.');
     }
 
     if (action === 'quiz') {
-      status.textContent = 'Generating a friendly quiz...';
+      status.textContent = '❓ Generating a friendly quiz...';
       results.innerHTML = renderQuiz(text);
       addHistory('Quiz generated');
-      celebratePet('Quiz time! You can do this.');
     }
 
     if (action === 'focus') {
-      status.textContent = 'Opening a focus sprint...';
+      status.textContent = '🎮 Opening a focus sprint...';
       results.innerHTML = renderFocusPuzzle(text);
       addHistory('Focus sprint started');
-      celebratePet('Tiny challenge unlocked.');
     }
   });
 });
@@ -185,7 +188,6 @@ geminiBtn.addEventListener('click', async () => {
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Gemini returned no content.';
     geminiOutput.innerHTML = `<p>${escapeHtml(reply)}</p>`;
     addHistory('Gemini boost used');
-    celebratePet('Gemini gave you a fresh boost.');
   } catch (error) {
     geminiOutput.innerHTML = `<p>${escapeHtml(error.message)}</p>`;
   }
