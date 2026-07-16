@@ -1,10 +1,9 @@
 const notesInput = document.getElementById('notesInput');
 const fileInput = document.getElementById('fileInput');
-const importBtn = document.getElementById('importBtn');
-const summarizeBtn = document.getElementById('summarizeBtn');
-const guideBtn = document.getElementById('guideBtn');
-const quizBtn = document.getElementById('quizBtn');
-const focusBtn = document.getElementById('focusBtn');
+const themeToggle = document.getElementById('themeToggle');
+const petMascot = document.getElementById('petMascot');
+const petStatus = document.getElementById('petStatus');
+const petCheerBtn = document.getElementById('petCheerBtn');
 const results = document.getElementById('results');
 const status = document.getElementById('status');
 const geminiKeyInput = document.getElementById('geminiKey');
@@ -13,74 +12,77 @@ const geminiBtn = document.getElementById('geminiBtn');
 const geminiOutput = document.getElementById('geminiOutput');
 
 const state = {
-  text: ''
+  text: '',
+  theme: localStorage.getItem('study-theme') || 'dark'
 };
 
 if (window.pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
 }
 
-importBtn.addEventListener('click', async () => {
+applyTheme(state.theme);
+
+fileInput.addEventListener('change', async () => {
   const file = fileInput.files[0];
-  if (!file) {
-    status.textContent = 'Choose a file first.';
-    return;
-  }
+  if (!file) return;
 
   try {
-    status.textContent = 'Reading your file...';
+    status.textContent = 'Reading your material...';
     const text = await readFile(file);
     state.text = text;
     notesInput.value = text;
+    celebratePet('Material loaded. You are ready to learn.');
     status.textContent = 'Material loaded. Pick a study action.';
   } catch (error) {
-    status.textContent = 'The file could not be read. Try plain text or a smaller PDF.';
+    status.textContent = 'The file could not be read. Try a smaller PDF or plain text.';
     console.error(error);
   }
 });
 
-summarizeBtn.addEventListener('click', () => {
-  const text = getText();
-  if (!text) {
-    status.textContent = 'Add notes or upload a file first.';
-    return;
-  }
+document.querySelectorAll('[data-action]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const action = button.getAttribute('data-action');
+    const text = getText();
 
-  status.textContent = 'Creating a quick summary...';
-  results.innerHTML = renderSummary(text);
+    if (!text) {
+      status.textContent = 'Add notes or upload a file first.';
+      return;
+    }
+
+    if (action === 'summarize') {
+      status.textContent = 'Creating a quick summary...';
+      results.innerHTML = renderSummary(text);
+      celebratePet('A crisp summary is ready.');
+    }
+
+    if (action === 'guide') {
+      status.textContent = 'Building a study guide...';
+      results.innerHTML = renderGuide(text);
+      celebratePet('A calm guide is here.');
+    }
+
+    if (action === 'quiz') {
+      status.textContent = 'Generating a friendly quiz...';
+      results.innerHTML = renderQuiz(text);
+      celebratePet('Quiz time! You can do this.');
+    }
+
+    if (action === 'focus') {
+      status.textContent = 'Opening a focus sprint...';
+      results.innerHTML = renderFocusPuzzle(text);
+      celebratePet('Tiny challenge unlocked.');
+    }
+  });
 });
 
-guideBtn.addEventListener('click', () => {
-  const text = getText();
-  if (!text) {
-    status.textContent = 'Add notes or upload a file first.';
-    return;
-  }
-
-  status.textContent = 'Building a study guide...';
-  results.innerHTML = renderGuide(text);
+themeToggle.addEventListener('click', () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(state.theme);
+  localStorage.setItem('study-theme', state.theme);
 });
 
-quizBtn.addEventListener('click', () => {
-  const text = getText();
-  if (!text) {
-    status.textContent = 'Add notes or upload a file first.';
-    return;
-  }
-
-  status.textContent = 'Generating quiz prompts...';
-  results.innerHTML = renderQuiz(text);
-});
-
-focusBtn.addEventListener('click', () => {
-  const text = getText();
-  if (!text) {
-    status.textContent = 'Add notes or upload a file first.';
-    return;
-  }
-
-  status.textContent = 'Unlocking a focus challenge...';
-  results.innerHTML = renderFocusPuzzle(text);
+petCheerBtn.addEventListener('click', () => {
+  celebratePet('Nova is cheering for you. Keep going!');
 });
 
 geminiBtn.addEventListener('click', async () => {
@@ -98,11 +100,7 @@ geminiBtn.addEventListener('click', async () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `${prompt}\n\nContext:\n${text || 'No study material has been loaded yet.'}`
-          }]
-        }]
+        contents: [{ parts: [{ text: `${prompt}\n\nContext:\n${text || 'No study material has been loaded yet.'}` }] }]
       })
     });
 
@@ -113,10 +111,32 @@ geminiBtn.addEventListener('click', async () => {
 
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Gemini returned no content.';
     geminiOutput.innerHTML = `<p>${escapeHtml(reply)}</p>`;
+    celebratePet('Gemini gave you a fresh boost.');
   } catch (error) {
     geminiOutput.innerHTML = `<p>${escapeHtml(error.message)}</p>`;
   }
 });
+
+results.addEventListener('click', (event) => {
+  if (event.target.id === 'checkPuzzleBtn') {
+    const answerInput = document.getElementById('puzzleAnswer');
+    const puzzleResult = document.getElementById('puzzleResult');
+    const answer = answerInput.value.trim().toLowerCase();
+    const target = results.innerHTML.match(/<strong>(.*?)<\/strong>/)?.[1]?.toLowerCase() || '';
+
+    if (answer && answer === target) {
+      puzzleResult.textContent = 'Perfect. Your focus streak just leveled up.';
+      celebratePet('You solved it!');
+    } else {
+      puzzleResult.textContent = 'Nice try. One more go is still progress.';
+    }
+  }
+});
+
+function applyTheme(theme) {
+  document.body.classList.toggle('light', theme === 'light');
+  themeToggle.textContent = theme === 'light' ? '☾' : '☀︎';
+}
 
 function getText() {
   const text = notesInput.value.trim();
@@ -159,46 +179,29 @@ function renderSummary(text) {
 }
 
 function renderGuide(text) {
-  const sections = text
-    .split(/\n{2,}/)
-    .map((section) => section.trim())
-    .filter(Boolean)
-    .slice(0, 5);
+  const sections = text.split(/\n{2,}/).map((section) => section.trim()).filter(Boolean).slice(0, 4);
 
-  const guide = sections
-    .map((section, index) => {
-      const heading = section.split(/\s+/).slice(0, 6).join(' ');
-      return `<li><strong>Section ${index + 1}:</strong> ${escapeHtml(heading)}…</li>`;
-    })
-    .join('');
+  const guide = sections.map((section, index) => {
+    const heading = section.split(/\s+/).slice(0, 8).join(' ');
+    return `<li><strong>Step ${index + 1}:</strong> ${escapeHtml(heading)}…</li>`;
+  }).join('');
 
   return `<ul>${guide}</ul>`;
 }
 
 function renderQuiz(text) {
-  const chunks = text
-    .split(/\n{2,}/)
-    .map((chunk) => chunk.trim())
-    .filter(Boolean)
-    .slice(0, 5);
+  const chunks = text.split(/\n{2,}/).map((chunk) => chunk.trim()).filter(Boolean).slice(0, 3);
 
-  const questions = chunks
-    .map((chunk, index) => {
-      const short = chunk.split(/\s+/).slice(0, 12).join(' ');
-      return `<li><strong>Q${index + 1}.</strong> What is the main idea of: “${escapeHtml(short)}”?</li>`;
-    })
-    .join('');
+  const questions = chunks.map((chunk, index) => {
+    const short = chunk.split(/\s+/).slice(0, 10).join(' ');
+    return `<li><strong>Q${index + 1}.</strong> What is the main idea of: “${escapeHtml(short)}”?</li>`;
+  }).join('');
 
   return `<ul>${questions}</ul>`;
 }
 
 function renderFocusPuzzle(text) {
-  const terms = text
-    .toLowerCase()
-    .match(/\b[a-z]{5,}\b/g)
-    ?.filter((word) => word.length > 5)
-    .slice(0, 5) || ['focus', 'memory', 'study'];
-
+  const terms = text.toLowerCase().match(/\b[a-z]{5,}\b/g)?.filter((word) => word.length > 5).slice(0, 5) || ['focus', 'memory', 'study'];
   const target = terms[0];
   const scrambled = scrambleWord(target);
 
@@ -207,7 +210,7 @@ function renderFocusPuzzle(text) {
     <p><strong>${escapeHtml(scrambled)}</strong></p>
     <p>Hint: it is related to your chapter.</p>
     <input id="puzzleAnswer" placeholder="Type your answer" />
-    <button id="checkPuzzleBtn">Check answer</button>
+    <button class="secondary-button" id="checkPuzzleBtn">Check answer</button>
     <div id="puzzleResult" class="status"></div>
   `;
 }
@@ -221,19 +224,17 @@ function scrambleWord(word) {
   return chars.join('');
 }
 
-results.addEventListener('click', (event) => {
-  if (event.target.id === 'checkPuzzleBtn') {
-    const answer = document.getElementById('puzzleAnswer').value.trim().toLowerCase();
-    const target = results.innerHTML.match(/<strong>(.*?)<\/strong>/)?.[1]?.toLowerCase() || '';
-    const puzzleResult = document.getElementById('puzzleResult');
-
-    if (answer && answer === target) {
-      puzzleResult.textContent = 'Nice job. Your focus streak is growing.';
-    } else {
-      puzzleResult.textContent = 'Try again. A small win still counts.';
-    }
-  }
-});
+function celebratePet(message) {
+  petStatus.textContent = message;
+  petMascot.classList.remove('celebrate');
+  void petMascot.offsetWidth;
+  petMascot.classList.add('celebrate');
+  window.clearTimeout(celebratePet.timeout);
+  celebratePet.timeout = window.setTimeout(() => {
+    petMascot.classList.remove('celebrate');
+    petStatus.textContent = 'Nova is ready to cheer you on.';
+  }, 1200);
+}
 
 function splitSentences(text) {
   return (text.match(/[^.!?]+[.!?]+/g) || [text]).map((sentence) => sentence.trim()).filter(Boolean);

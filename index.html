@@ -2,59 +2,123 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
     <title>Study Buddy AI</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
   </head>
   <body>
+    <div class="background-glow">
+      <div class="blob blob-a"></div>
+      <div class="blob blob-b"></div>
+      <div class="blob blob-c"></div>
+    </div>
+
     <div class="app-shell">
-      <header class="hero">
+      <header class="glass hero-card">
         <div>
-          <p class="eyebrow">GitHub-first study companion</p>
+          <p class="eyebrow">Liquid study companion</p>
           <h1>Study Buddy AI</h1>
           <p class="hero-copy">
-            Turn notes, chapters, or PDFs into bite-sized summaries, study guides,
-            quizzes, and focus-friendly mini challenges.
+            Turn your notes into calm, confidence-boosting study moments.
           </p>
         </div>
+        <button class="icon-button" id="themeToggle" aria-label="Switch theme">☀︎</button>
       </header>
 
-      <main class="grid">
-        <section class="card">
-          <h2>Bring in your material</h2>
-          <textarea id="notesInput" placeholder="Paste your chapter notes here or upload a PDF or text file."></textarea>
-          <div class="controls">
+      <main class="layout">
+        <section class="glass card">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">Study source</p>
+              <h2>Drop in your material</h2>
+            </div>
+          </div>
+
+          <textarea id="notesInput" placeholder="Paste a chapter, notes, or a lesson summary here."></textarea>
+
+          <label class="upload-pill" for="fileInput">
             <input id="fileInput" type="file" accept=".txt,.md,.pdf" />
-            <button id="importBtn">Load file</button>
+            <span>Upload PDF or text</span>
+          </label>
+
+          <div class="chip-row">
+            <span class="chip">PDF ready</span>
+            <span class="chip">Gemini ready</span>
+            <span class="chip">Focus friendly</span>
           </div>
-          <p class="hint">The prototype accepts PDFs, TXT, and Markdown. Add a Gemini API key to unlock richer generation.</p>
         </section>
 
-        <section class="card">
-          <h2>Study tools</h2>
-          <div class="button-row">
-            <button id="summarizeBtn">Summarize</button>
-            <button id="guideBtn">Study guide</button>
-            <button id="quizBtn">Quiz me</button>
-            <button id="focusBtn">Focus challenge</button>
+        <section class="glass card pet-card">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">Your pet buddy</p>
+              <h2>Nova</h2>
+            </div>
           </div>
-          <div id="status" class="status" role="status">Ready to help you study.</div>
+
+          <div class="pet-wrap">
+            <div class="pet" id="petMascot">
+              <div class="pet-ear ear-left"></div>
+              <div class="pet-ear ear-right"></div>
+              <div class="pet-face">
+                <div class="pet-eye left"></div>
+                <div class="pet-eye right"></div>
+                <div class="pet-mouth"></div>
+              </div>
+              <div class="pet-tail"></div>
+            </div>
+          </div>
+
+          <p class="pet-copy" id="petStatus">Nova is ready to cheer you on.</p>
+          <button class="secondary-button" id="petCheerBtn">Cheer me up</button>
         </section>
 
-        <section class="card results-card">
-          <h2>Results</h2>
+        <section class="glass card actions-card">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">Study flow</p>
+              <h2>Pick your next step</h2>
+            </div>
+          </div>
+
+          <div class="action-grid">
+            <button class="action-pill" data-action="summarize">Summarize</button>
+            <button class="action-pill" data-action="guide">Study guide</button>
+            <button class="action-pill" data-action="quiz">Quiz me</button>
+            <button class="action-pill" data-action="focus">Focus sprint</button>
+          </div>
+
+          <div id="status" class="status" role="status">Ready to make studying feel lighter.</div>
+        </section>
+
+        <section class="glass card output-card">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">Response</p>
+              <h2>Here’s your study spark</h2>
+            </div>
+          </div>
           <div id="results" class="results"></div>
         </section>
 
-        <section class="card gemini-card">
-          <h2>Gemini extension</h2>
-          <label class="inline-label" for="geminiKey">Gemini API key</label>
+        <section class="glass card gemini-card">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">Gemini extension</p>
+              <h2>Ask for a smarter boost</h2>
+            </div>
+          </div>
+
+          <label class="field-label" for="geminiKey">API key</label>
           <input id="geminiKey" type="password" placeholder="Paste your Gemini key" />
-          <label class="inline-label" for="geminiPrompt">Prompt</label>
-          <textarea id="geminiPrompt" placeholder="Ask Gemini to simplify this topic, build a quiz, or create a study plan."></textarea>
-          <button id="geminiBtn">Ask Gemini</button>
-          <div id="geminiOutput" class="results"></div>
+
+          <label class="field-label" for="geminiPrompt">Prompt</label>
+          <textarea id="geminiPrompt" placeholder="Ask Gemini to simplify, quiz, or build a plan from your material."></textarea>
+
+          <button class="primary-button" id="geminiBtn">Ask Gemini</button>
+          <div id="geminiOutput" class="results compact"></div>
         </section>
       </main>
     </div>
