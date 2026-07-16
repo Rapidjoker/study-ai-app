@@ -19,12 +19,6 @@ const geminiKeyInput = document.getElementById('geminiKey');
 const geminiPromptInput = document.getElementById('geminiPrompt');
 const geminiBtn = document.getElementById('geminiBtn');
 const geminiOutput = document.getElementById('geminiOutput');
-const results = document.getElementById('results');
-const status = document.getElementById('status');
-const geminiKeyInput = document.getElementById('geminiKey');
-const geminiPromptInput = document.getElementById('geminiPrompt');
-const geminiBtn = document.getElementById('geminiBtn');
-const geminiOutput = document.getElementById('geminiOutput');
 
 const state = {
   text: '',
@@ -38,6 +32,21 @@ if (window.pdfjsLib) {
 }
 
 applyTheme(state.theme);
+
+// Update avatar live as user selects species
+animalSelect.addEventListener('change', (e) => {
+  const emojiMap = {
+    'dog': '🐶',
+    'cat': '🐱',
+    'parrot': '🦜',
+    'lion': '🦁',
+    'hippo': '🦛',
+    'eagle': '🦅',
+    'fox': '🦊',
+    'bunny': '🐰'
+  };
+  petMascot.setAttribute('data-emoji', emojiMap[e.target.value] || '🦊');
+});
 
 fileInput.addEventListener('change', async () => {
   const file = fileInput.files[0];
@@ -98,10 +107,6 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('study-theme', state.theme);
 });
 
-petCheerBtn.addEventListener('click', () => {
-  celebratePet(`${petName.textContent || 'Your buddy'} is cheering for you. Keep going!`);
-});
-
 const petBreeds = {
   dog: ['Golden Retriever', 'Poodle', 'Shiba Inu', 'Bulldog'],
   cat: ['Siamese', 'Persian', 'Maine Coon', 'Bengal'],
@@ -153,12 +158,43 @@ accessoryColorInput.addEventListener('input', () => {
 });
 
 petReadyBtn.addEventListener('click', () => {
+  // Determine the emoji for the selected animal
+  const emojiMap = {
+    'dog': '🐶',
+    'cat': '🐱',
+    'parrot': '🦜',
+    'lion': '🦁',
+    'hippo': '🦛',
+    'eagle': '🦅',
+    'fox': '🦊',
+    'bunny': '🐰'
+  };
+  const selectedEmoji = emojiMap[animalSelect.value] || '🦊';
+  
+  // Store pet name
   const name = `${animalSelect.options[animalSelect.selectedIndex].text} ${breedSelect.value}`;
-  petName.textContent = name;
-  petStatus.textContent = `${name} is ready to cheer you on.`;
-  petMascot.classList.add('winked');
-  setTimeout(() => petMascot.classList.remove('winked'), 700);
-  celebratePet(`${name} just winked hello!`);
+  state.petName = name;
+  localStorage.setItem('pixel-pass-pet', name);
+  
+  // 1. Trigger the wink animation
+  petMascot.classList.add('wink-anim');
+
+  // 2. Wait for the animation to finish (600ms), then swap screens
+  setTimeout(() => {
+    // Sync the mini avatar to what they chose
+    miniAvatar.textContent = selectedEmoji;
+    
+    // Hide onboarding
+    onboardingScreen.classList.remove('active');
+    onboardingScreen.classList.add('hidden');
+    
+    // Show main app
+    mainAppScreen.classList.remove('hidden');
+    mainAppScreen.classList.add('active');
+    
+    // Clean up animation class
+    petMascot.classList.remove('wink-anim');
+  }, 600);
 });
 
 geminiBtn.addEventListener('click', async () => {
