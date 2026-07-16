@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Buddy AI</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">GitHub-first study companion</p>
+          <h1>Study Buddy AI</h1>
+          <p class="hero-copy">
+            Turn notes, chapters, or PDFs into bite-sized summaries, study guides,
+            quizzes, and focus-friendly mini challenges.
+          </p>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="card">
+          <h2>Bring in your material</h2>
+          <textarea id="notesInput" placeholder="Paste your chapter notes here or upload a PDF or text file."></textarea>
+          <div class="controls">
+            <input id="fileInput" type="file" accept=".txt,.md,.pdf" />
+            <button id="importBtn">Load file</button>
+          </div>
+          <p class="hint">The prototype accepts PDFs, TXT, and Markdown. Add a Gemini API key to unlock richer generation.</p>
+        </section>
+
+        <section class="card">
+          <h2>Study tools</h2>
+          <div class="button-row">
+            <button id="summarizeBtn">Summarize</button>
+            <button id="guideBtn">Study guide</button>
+            <button id="quizBtn">Quiz me</button>
+            <button id="focusBtn">Focus challenge</button>
+          </div>
+          <div id="status" class="status" role="status">Ready to help you study.</div>
+        </section>
+
+        <section class="card results-card">
+          <h2>Results</h2>
+          <div id="results" class="results"></div>
+        </section>
+
+        <section class="card gemini-card">
+          <h2>Gemini extension</h2>
+          <label class="inline-label" for="geminiKey">Gemini API key</label>
+          <input id="geminiKey" type="password" placeholder="Paste your Gemini key" />
+          <label class="inline-label" for="geminiPrompt">Prompt</label>
+          <textarea id="geminiPrompt" placeholder="Ask Gemini to simplify this topic, build a quiz, or create a study plan."></textarea>
+          <button id="geminiBtn">Ask Gemini</button>
+          <div id="geminiOutput" class="results"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
