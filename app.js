@@ -5,7 +5,14 @@ const petMascot = document.getElementById('petMascot');
 const petStatus = document.getElementById('petStatus');
 const petCheerBtn = document.getElementById('petCheerBtn');
 const petName = document.getElementById('petName');
-const petChoices = document.querySelectorAll('.pet-choice');
+const animalSelect = document.getElementById('animalSelect');
+const breedSelect = document.getElementById('breedSelect');
+const genderSelect = document.getElementById('genderSelect');
+const swatches = document.querySelectorAll('.swatch');
+const accessoryChips = document.querySelectorAll('.accessory-chip');
+const accessoryColorInput = document.getElementById('accessoryColor');
+const petReadyBtn = document.getElementById('petReadyBtn');
+const historyList = document.getElementById('historyList');
 const results = document.getElementById('results');
 const status = document.getElementById('status');
 const geminiKeyInput = document.getElementById('geminiKey');
@@ -15,7 +22,8 @@ const geminiOutput = document.getElementById('geminiOutput');
 
 const state = {
   text: '',
-  theme: localStorage.getItem('study-theme') || 'dark'
+  theme: localStorage.getItem('study-theme') || 'dark',
+  history: JSON.parse(localStorage.getItem('pixel-pass-history') || '[]')
 };
 
 if (window.pdfjsLib) {
@@ -54,24 +62,28 @@ document.querySelectorAll('[data-action]').forEach((button) => {
     if (action === 'summarize') {
       status.textContent = 'Creating a quick summary...';
       results.innerHTML = renderSummary(text);
+      addHistory('Summary created');
       celebratePet('A crisp summary is ready.');
     }
 
     if (action === 'guide') {
       status.textContent = 'Building a study guide...';
       results.innerHTML = renderGuide(text);
+      addHistory('Study guide built');
       celebratePet('A calm guide is here.');
     }
 
     if (action === 'quiz') {
       status.textContent = 'Generating a friendly quiz...';
       results.innerHTML = renderQuiz(text);
+      addHistory('Quiz generated');
       celebratePet('Quiz time! You can do this.');
     }
 
     if (action === 'focus') {
       status.textContent = 'Opening a focus sprint...';
       results.innerHTML = renderFocusPuzzle(text);
+      addHistory('Focus sprint started');
       celebratePet('Tiny challenge unlocked.');
     }
   });
@@ -84,16 +96,66 @@ themeToggle.addEventListener('click', () => {
 });
 
 petCheerBtn.addEventListener('click', () => {
-  celebratePet(`${petName.textContent} is cheering for you. Keep going!`);
+  celebratePet(`${petName.textContent || 'Your buddy'} is cheering for you. Keep going!`);
 });
 
-petChoices.forEach((choice) => {
-  choice.addEventListener('click', () => {
-    petChoices.forEach((btn) => btn.classList.remove('active'));
-    choice.classList.add('active');
-    petName.textContent = choice.getAttribute('data-pet');
-    petStatus.textContent = `${choice.getAttribute('data-pet')} is ready to cheer you on.`;
+const petBreeds = {
+  dog: ['Golden Retriever', 'Poodle', 'Shiba Inu', 'Bulldog'],
+  cat: ['Siamese', 'Persian', 'Maine Coon', 'Bengal'],
+  parrot: ['Macaw', 'Cockatiel', 'African Grey', 'Budgie'],
+  lion: ['Savannah', 'Masaai', 'Cub', 'Royal'],
+  hippo: ['River Hippo', 'Baby Hippo', 'River King', 'Mud Hippo'],
+  eagle: ['Bald Eagle', 'Harpy Eagle', 'Golden Eagle', 'Sea Eagle'],
+  fox: ['Arctic Fox', 'Red Fox', 'Fennec Fox', 'Desert Fox'],
+  bunny: ['Dutch', 'Rex', 'Lop', 'Mini Holland']
+};
+
+function populateBreeds() {
+  breedSelect.innerHTML = petBreeds[animalSelect.value].map((breed) => `<option value="${breed}">${breed}</option>`).join('');
+}
+
+populateBreeds();
+animalSelect.addEventListener('change', populateBreeds);
+
+swatches.forEach((swatch) => {
+  swatch.addEventListener('click', () => {
+    swatches.forEach((item) => item.classList.remove('active'));
+    swatch.classList.add('active');
+    petMascot.style.background = `linear-gradient(145deg, rgba(255,255,255,0.85), ${swatch.dataset.color})`;
   });
+});
+
+accessoryChips.forEach((chip) => {
+  chip.addEventListener('click', () => {
+    accessoryChips.forEach((item) => item.classList.remove('active'));
+    chip.classList.add('active');
+    const accessory = chip.dataset.accessory;
+    const accessoryEl = document.getElementById('petAccessory');
+    if (accessory === 'none') {
+      accessoryEl.style.display = 'none';
+    } else {
+      accessoryEl.style.display = 'block';
+      accessoryEl.style.background = accessoryColorInput.value;
+      accessoryEl.style.width = accessory === 'bandana' ? '54px' : '42px';
+      accessoryEl.style.height = accessory === 'crown' ? '20px' : '18px';
+      accessoryEl.style.borderRadius = accessory === 'crown' ? '0 0 999px 999px' : '999px';
+    }
+  });
+});
+
+accessoryColorInput.addEventListener('input', () => {
+  const active = document.querySelector('.accessory-chip.active');
+  if (!active || active.dataset.accessory === 'none') return;
+  document.getElementById('petAccessory').style.background = accessoryColorInput.value;
+});
+
+petReadyBtn.addEventListener('click', () => {
+  const name = `${animalSelect.options[animalSelect.selectedIndex].text} ${breedSelect.value}`;
+  petName.textContent = name;
+  petStatus.textContent = `${name} is ready to cheer you on.`;
+  petMascot.classList.add('winked');
+  setTimeout(() => petMascot.classList.remove('winked'), 700);
+  celebratePet(`${name} just winked hello!`);
 });
 
 geminiBtn.addEventListener('click', async () => {
@@ -122,6 +184,7 @@ geminiBtn.addEventListener('click', async () => {
 
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Gemini returned no content.';
     geminiOutput.innerHTML = `<p>${escapeHtml(reply)}</p>`;
+    addHistory('Gemini boost used');
     celebratePet('Gemini gave you a fresh boost.');
   } catch (error) {
     geminiOutput.innerHTML = `<p>${escapeHtml(error.message)}</p>`;
@@ -243,9 +306,22 @@ function celebratePet(message) {
   window.clearTimeout(celebratePet.timeout);
   celebratePet.timeout = window.setTimeout(() => {
     petMascot.classList.remove('celebrate');
-    petStatus.textContent = 'Nova is ready to cheer you on.';
+    petStatus.textContent = `${petName.textContent || 'Your buddy'} is ready to cheer you on.`;
   }, 1200);
 }
+
+function addHistory(entry) {
+  state.history.unshift(`${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} • ${entry}`);
+  state.history = state.history.slice(0, 6);
+  localStorage.setItem('pixel-pass-history', JSON.stringify(state.history));
+  renderHistory();
+}
+
+function renderHistory() {
+  historyList.innerHTML = state.history.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+}
+
+renderHistory();
 
 function splitSentences(text) {
   return (text.match(/[^.!?]+[.!?]+/g) || [text]).map((sentence) => sentence.trim()).filter(Boolean);

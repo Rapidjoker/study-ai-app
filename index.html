@@ -18,10 +18,10 @@
     <div class="app-shell">
       <header class="glass hero-card">
         <div>
-          <p class="eyebrow">Liquid study companion</p>
-          <h1>Study Buddy AI</h1>
+          <p class="eyebrow">Pixel Pass</p>
+          <h1>Meet your study companion</h1>
           <p class="hero-copy">
-            A calm, smart study space for iPhone and Android with fluid motion and a friendly companion.
+            Pick a playful avatar, drop in your notes, and let your smart study buddy guide you through each lesson.
           </p>
         </div>
         <div class="top-actions">
@@ -30,7 +30,85 @@
       </header>
 
       <main class="layout">
-        <section class="glass card">
+        <section class="glass card onboarding-card">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">Custom companion</p>
+              <h2>Build your pet</h2>
+            </div>
+          </div>
+
+          <div class="pet-stage">
+            <div class="pet-preview" id="petMascot">
+              <div class="pet-ear ear-left"></div>
+              <div class="pet-ear ear-right"></div>
+              <div class="pet-face">
+                <div class="pet-eye left"></div>
+                <div class="pet-eye right"></div>
+                <div class="pet-mouth"></div>
+                <div class="pet-accessory" id="petAccessory"></div>
+              </div>
+              <div class="pet-tail"></div>
+            </div>
+          </div>
+
+          <div class="selection-group">
+            <label class="field-label" for="animalSelect">Animal</label>
+            <select id="animalSelect">
+              <option value="dog">Dog</option>
+              <option value="cat">Cat</option>
+              <option value="parrot">Parrot</option>
+              <option value="lion">Lion</option>
+              <option value="hippo">Hippo</option>
+              <option value="eagle">Eagle</option>
+              <option value="fox">Fox</option>
+              <option value="bunny">Bunny</option>
+            </select>
+          </div>
+
+          <div class="selection-group">
+            <label class="field-label" for="breedSelect">Breed / type</label>
+            <select id="breedSelect"></select>
+          </div>
+
+          <div class="selection-group">
+            <label class="field-label" for="genderSelect">Gender</label>
+            <select id="genderSelect">
+              <option value="he/him">He / Him</option>
+              <option value="she/her">She / Her</option>
+              <option value="they/them">They / Them</option>
+            </select>
+          </div>
+
+          <div class="selection-group">
+            <label class="field-label">Color</label>
+            <div class="swatch-row">
+              <button class="swatch active" data-color="#7c9cff" style="--swatch:#7c9cff"></button>
+              <button class="swatch" data-color="#ff7ac7" style="--swatch:#ff7ac7"></button>
+              <button class="swatch" data-color="#4be2b8" style="--swatch:#4be2b8"></button>
+              <button class="swatch" data-color="#ffd36b" style="--swatch:#ffd36b"></button>
+            </div>
+          </div>
+
+          <div class="selection-group">
+            <label class="field-label">Accessories</label>
+            <div class="accessory-row">
+              <button class="chip accessory-chip active" data-accessory="glasses">Glasses</button>
+              <button class="chip accessory-chip" data-accessory="bandana">Bandana</button>
+              <button class="chip accessory-chip" data-accessory="crown">Crown</button>
+              <button class="chip accessory-chip" data-accessory="none">None</button>
+            </div>
+          </div>
+
+          <div class="selection-group">
+            <label class="field-label" for="accessoryColor">Accessory color</label>
+            <input id="accessoryColor" type="color" value="#ff5ea8" />
+          </div>
+
+          <button class="primary-button full" id="petReadyBtn">Welcome my buddy</button>
+        </section>
+
+        <section class="glass card input-card">
           <div class="section-header">
             <div>
               <p class="section-kicker">Study source</p>
@@ -48,39 +126,8 @@
           <div class="chip-row">
             <span class="chip">PDF ready</span>
             <span class="chip">Gemini ready</span>
-            <span class="chip">Focus friendly</span>
+            <span class="chip"> Focus friendly</span>
           </div>
-        </section>
-
-        <section class="glass card pet-card">
-          <div class="section-header">
-            <div>
-              <p class="section-kicker">Your avatar</p>
-              <h2 id="petName">Nova</h2>
-            </div>
-          </div>
-
-          <div class="pet-wrap">
-            <div class="pet" id="petMascot">
-              <div class="pet-ear ear-left"></div>
-              <div class="pet-ear ear-right"></div>
-              <div class="pet-face">
-                <div class="pet-eye left"></div>
-                <div class="pet-eye right"></div>
-                <div class="pet-mouth"></div>
-              </div>
-              <div class="pet-tail"></div>
-            </div>
-          </div>
-
-          <div class="pet-choices" id="petChoices">
-            <button class="pet-choice active" data-pet="Nova">Nova</button>
-            <button class="pet-choice" data-pet="Luma">Luma</button>
-            <button class="pet-choice" data-pet="Kiko">Kiko</button>
-          </div>
-
-          <p class="pet-copy" id="petStatus">Nova is ready to cheer you on.</p>
-          <button class="secondary-button" id="petCheerBtn">Cheer me up</button>
         </section>
 
         <section class="glass card actions-card">
@@ -109,6 +156,16 @@
             </div>
           </div>
           <div id="results" class="results"></div>
+        </section>
+
+        <section class="glass card history-card">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">History</p>
+              <h2>Your recent moments</h2>
+            </div>
+          </div>
+          <ul id="historyList" class="history-list"></ul>
         </section>
 
         <section class="glass card gemini-card">
