@@ -21,10 +21,12 @@
           <p class="eyebrow">Liquid study companion</p>
           <h1>Study Buddy AI</h1>
           <p class="hero-copy">
-            Turn your notes into calm, confidence-boosting study moments.
+            A calm, smart study space for iPhone and Android with fluid motion and a friendly companion.
           </p>
         </div>
-        <button class="icon-button" id="themeToggle" aria-label="Switch theme">☀︎</button>
+        <div class="top-actions">
+          <button class="icon-button" id="themeToggle" aria-label="Switch theme">☀︎</button>
+        </div>
       </header>
 
       <main class="layout">
@@ -53,8 +55,8 @@
         <section class="glass card pet-card">
           <div class="section-header">
             <div>
-              <p class="section-kicker">Your pet buddy</p>
-              <h2>Nova</h2>
+              <p class="section-kicker">Your avatar</p>
+              <h2 id="petName">Nova</h2>
             </div>
           </div>
 
@@ -69,6 +71,12 @@
               </div>
               <div class="pet-tail"></div>
             </div>
+          </div>
+
+          <div class="pet-choices" id="petChoices">
+            <button class="pet-choice active" data-pet="Nova">Nova</button>
+            <button class="pet-choice" data-pet="Luma">Luma</button>
+            <button class="pet-choice" data-pet="Kiko">Kiko</button>
           </div>
 
           <p class="pet-copy" id="petStatus">Nova is ready to cheer you on.</p>

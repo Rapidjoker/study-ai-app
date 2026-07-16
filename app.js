@@ -4,6 +4,8 @@ const themeToggle = document.getElementById('themeToggle');
 const petMascot = document.getElementById('petMascot');
 const petStatus = document.getElementById('petStatus');
 const petCheerBtn = document.getElementById('petCheerBtn');
+const petName = document.getElementById('petName');
+const petChoices = document.querySelectorAll('.pet-choice');
 const results = document.getElementById('results');
 const status = document.getElementById('status');
 const geminiKeyInput = document.getElementById('geminiKey');
@@ -82,7 +84,16 @@ themeToggle.addEventListener('click', () => {
 });
 
 petCheerBtn.addEventListener('click', () => {
-  celebratePet('Nova is cheering for you. Keep going!');
+  celebratePet(`${petName.textContent} is cheering for you. Keep going!`);
+});
+
+petChoices.forEach((choice) => {
+  choice.addEventListener('click', () => {
+    petChoices.forEach((btn) => btn.classList.remove('active'));
+    choice.classList.add('active');
+    petName.textContent = choice.getAttribute('data-pet');
+    petStatus.textContent = `${choice.getAttribute('data-pet')} is ready to cheer you on.`;
+  });
 });
 
 geminiBtn.addEventListener('click', async () => {
